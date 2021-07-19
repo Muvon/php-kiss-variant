@@ -1,0 +1,31 @@
+{
+  "name": "muvon/variant",
+  "description": "Variant read and pack convertion int/uint",
+  "keywords": [
+    "uint",
+    "int",
+    "variant",
+    "bitclout",
+    "kiss",
+    "encoder",
+    "decoder",
+    "lightweight"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Muvon Co. Ltd",
+      "email": "contact@muvon.io"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require-dev": {
+    "phpunit/phpunit": "^10"
+  },
+  "autoload": {
+    "psr-4": {
+      "Muvon\\KISS\\": "src/"
+    }
+  }
+}
