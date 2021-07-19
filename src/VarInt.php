@@ -36,27 +36,27 @@ class VarInt {
     return $hex;
   }
 
-  public static function readInt(string $hex): ?int {
-    $ux = static::readUint($hex);
-    $x = $ux >> 1;
-    if ($ux & 1 !== 0) {
-      $x ^= $x;
-    }
+  // public static function readInt(string $hex): ?int {
+  //   $ux = static::readUint($hex);
+  //   $x = $ux >> 1;
+  //   if ($ux & 1 !== 0) {
+  //     $x = ~$x;
+  //   }
 
-    return $x;
-  }
+  //   return $x;
+  // }
 
-  public static function packInt(int $value): string {
-    $ux = ($value < 0 ? abs($value) : $value + 0x10000000000000000) << 1;
-    if ($value < 0) {
-      $ux = 0 ^ $ux;
-    }
-    return static::packUint($ux);
-  }
+  // public static function packInt(int $value): string {
+  //   $ux = ($value < 0 ? abs($value) : $value + 0x10000000000000000) << 1;
+  //   if ($value < 0) {
+  //     $ux = ~$ux;
+  //   }
+  //   return static::packUint($ux);
+  // }
 
 
-  public static function putInt(string &$hex, int $value): string {
-    $hex .= static::packInt($value);
-    return $hex;
-  }
+  // public static function putInt(string &$hex, int $value): string {
+  //   $hex .= static::packInt($value);
+  //   return $hex;
+  // }
 }
