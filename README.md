@@ -1,3 +1,3 @@
-# php-kiss-variant
+# php-kiss-varint
 
-KISS implementation of variant encode and decoder for int/uint
+KISS implementation of varint encode and decoder for int/uint

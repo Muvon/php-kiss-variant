@@ -1,7 +1,7 @@
 <?php
 namespace Muvon\KISS;
 
-class Variant {
+class VarInt {
   public static function readUint(string $hex): ?int {
     $x = 0;
     $s = 0;

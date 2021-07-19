@@ -1,10 +1,10 @@
 {
-  "name": "muvon/variant",
-  "description": "Variant read and pack convertion int/uint",
+  "name": "muvon/varint",
+  "description": "varint read and pack convertion int/uint",
   "keywords": [
     "uint",
     "int",
-    "variant",
+    "varint",
     "bitclout",
     "kiss",
     "encoder",
