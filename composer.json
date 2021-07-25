@@ -1,5 +1,5 @@
 {
-  "name": "muvon/varint",
+  "name": "muvon/kiss-varint",
   "description": "varint read and pack convertion int/uint",
   "keywords": [
     "uint",
