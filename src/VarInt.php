@@ -2,22 +2,25 @@
 namespace Muvon\KISS;
 
 class VarInt {
-  public static function readUint(string $hex): ?int {
+  public static function readUint(string $hex, int $offset = 0): array {
     $x = 0;
     $s = 0;
-    $i = 0;
+    $i = $offset;
+    $max_i = 19 + $offset;
     while (isset($hex[$i])) {
       $b = intval(hexdec($hex[$i] . $hex[$i + 1]));
       if ($b < 0x80) {
-        if ($i > 9 || $i === 9 && $b > 1) {
-          return $x;
+        if ($i > $max_i || $i === $max_i && $b > 1) {
+          return [$x, $i + 2];
         }
-        return ($x | $b << $s);
+        return [($x | $b << $s), $i + 2];
       }
       $x |= ($b & 0x7f) << $s;
       $s += 7;
       $i += 2;
     }
+
+    return [0, 0];
   }
 
   public static function packUint(int $value): string {
