@@ -23,6 +23,11 @@ class VarInt {
     return [0, 0];
   }
 
+  public static function readBool(string $hex, int $offset = 0): array {
+    [$flag, $next_offset] = static::readUint($hex, $offset);
+    return [!!$flag, $next_offset];
+  }
+
   public static function packUint(int $value): string {
     $h = '';
     $i = 0;
