@@ -43,37 +43,49 @@ class VarIntTest extends TestCase {
     );
   }
 
-  // public function testReadIntFromHex() {
-  //   $hex = '80897a';
-  //   $this->assertEquals(
-  //     2000000,
-  //     VarInt::readInt($hex)
-  //   );
+  public function testReadIntFromHex() {
+    $hex = 'ff91f401';
+    $this->assertEquals(
+      [-2000000, 8],
+      VarInt::readInt($hex)
+    );
 
-  //   $hex = 'dde5b31880897a';
-  //   $this->assertEquals(
-  //     51180253,
-  //     VarInt::readInt($hex)
-  //   );
-  // }
+    $hex = 'f601';
+    $this->assertEquals(
+      [123, 4],
+      VarInt::readInt($hex)
+    );
 
-  // public function testPackIntTohex() {
-  //   $value = -2000000;
-  //   $this->assertEquals(
-  //     '8092f401',
-  //     VarInt::packInt($value)
-  //   );
+    $hex = '04';
+    $this->assertEquals(
+      [2, 2],
+      VarInt::readInt($hex)
+    );
+  }
 
-  //   $value = -51180253;
-  //   $this->assertEquals(
-  //     'bacbe730',
-  //     VarInt::packInt($value)
-  //   );
+  public function testPackIntTohex() {
+    $value = -2000000;
+    $this->assertEquals(
+      'ff91f401',
+      VarInt::packInt($value)
+    );
 
-  //   $value = 51180253;
-  //   $this->assertEquals(
-  //     '80c0e730',
-  //     VarInt::packInt($value)
-  //   );
-  // }
+    $value = 2;
+    $this->assertEquals(
+      '04',
+      VarInt::packInt($value)
+    );
+
+    $value = 123;
+    $this->assertEquals(
+      'f601',
+      VarInt::packInt($value)
+    );
+
+    $value = 51180253;
+    $this->assertEquals(
+      'bacbe730',
+      VarInt::packInt($value)
+    );
+  }
 }
