@@ -10,15 +10,22 @@ class VarInt {
     $i = $offset;
     $max_i = $max_len + $offset;
     while (isset($bin[$i])) {
+      $use_gmp = $i > 6;
       $b = ord($bin[$i]);
       if ($b < 0x80) {
         if ($max_len > 0 && ($i > $max_i || $i === $max_i && $b > 1)) {
           throw new InvalidArgumentException('The number overflows allowed limits of max byte len = ' . $max_len);
         }
-        $result = gmp_or($x, gmp_shiftl($b, $s));
-        return [gmp_cmp($result, PHP_INT_MAX) >= 0 ? gmp_strval($result) : gmp_intval($result), $i + 1];
+        $result = $use_gmp 
+          ? gmp_or($x, gmp_shiftl($b, $s))
+          : $x | $b << $s
+        ;
+        return [$use_gmp  ? gmp_strval($result) :$result, $i + 1];
       }
-      $x = gmp_strval(gmp_or($x, gmp_shiftl(gmp_strval(gmp_and($b, 0x7f)), $s)));
+      $x = $use_gmp 
+        ? gmp_strval(gmp_or($x, gmp_shiftl(gmp_strval(gmp_and($b, 0x7f)), $s)))
+        : $x | (($b & 0x7f) << $s)
+      ;
       $s += 7;
       ++$i;
     }
