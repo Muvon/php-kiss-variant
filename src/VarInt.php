@@ -4,30 +4,30 @@ namespace Muvon\KISS;
 use InvalidArgumentException;
 
 class VarInt {
-  public static function readUint(string $hex, int $offset = 0, $max_len = 0): array {
+  public static function readUint(string $bin, int $offset = 0, $max_len = 0): array {
     $x = 0;
     $s = 0;
     $i = $offset;
-    $max_i = $max_len * 2 + $offset;
-    while (isset($hex[$i])) {
-      $b = intval(hexdec($hex[$i] . $hex[$i + 1]));
+    $max_i = $max_len + $offset;
+    while (isset($bin[$i])) {
+      $b = ord($bin[$i]);
       if ($b < 0x80) {
         if ($max_len > 0 && ($i > $max_i || $i === $max_i && $b > 1)) {
           throw new InvalidArgumentException('The number overflows allowed limits of max byte len = ' . $max_len);
         }
         $result = gmp_or($x, gmp_shiftl($b, $s));
-        return [gmp_cmp($result, PHP_INT_MAX) >= 0 ? gmp_strval($result) : gmp_intval($result), $i + 2];
+        return [gmp_cmp($result, PHP_INT_MAX) >= 0 ? gmp_strval($result) : gmp_intval($result), $i + 1];
       }
       $x = gmp_strval(gmp_or($x, gmp_shiftl(gmp_strval(gmp_and($b, 0x7f)), $s)));
       $s += 7;
-      $i += 2;
+      ++$i;
     }
 
     return [0, 0];
   }
 
-  public static function readBool(string $hex, int $offset = 0): array {
-    [$flag, $next_offset] = static::readUint($hex, $offset);
+  public static function readBool(string $bin, int $offset = 0): array {
+    [$flag, $next_offset] = static::readUint($bin, $offset);
     return [!!$flag, $next_offset];
   }
 
@@ -36,23 +36,20 @@ class VarInt {
     $i = 0;
 
     while ($value >= 0x80) {
-      $h .= sprintf(
-        '%02x',
-        ($value < PHP_INT_MAX ? ($value & 0xff | 0x80) : gmp_strval(gmp_or(gmp_and($value, 0xff), 0x80)))
-      );
+      $h .= chr($value < PHP_INT_MAX ? ($value & 0xff | 0x80) : gmp_strval(gmp_or(gmp_and($value, 0xff), 0x80)));
       $value = $value < PHP_INT_MAX ? $value >> 7 : gmp_shiftr($value, 7);
       $i++;
     }
-    return $h . sprintf('%02x', $value & 0xff);
+    return $h . chr($value & 0xff);
   }
 
-  public static function putUint(string &$hex, int $value): string {
-    $hex .= static::packUint($value);
-    return $hex;
+  public static function putUint(string &$bin, int $value): string {
+    $bin .= static::packUint($value);
+    return $bin;
   }
 
-  public static function readInt(string $hex, int $offset = 0, $max_len = 0): array {
-    [$ux, $offset] = static::readUint($hex, $offset);
+  public static function readInt(string $bin, int $offset = 0, $max_len = 0): array {
+    [$ux, $offset] = static::readUint($bin, $offset, $max_len);
     $x = intval($ux >> 1);
     $b = $ux > PHP_INT_MAX ? gmp_intval(gmp_and($ux, 1)) : ($ux & 1);
     if ($b !== 0) {
@@ -75,9 +72,9 @@ class VarInt {
     return static::packUint($ux);
   }
 
-  public static function putInt(string &$hex, int $value): string {
-    $hex .= static::packInt($value);
-    return $hex;
+  public static function putInt(string &$bin, int $value): string {
+    $bin .= static::packInt($value);
+    return $bin;
   }
 
   protected static function uint64(string $value): string {
@@ -89,7 +86,6 @@ class VarInt {
 
   protected static function int64(string $value): string {
     if ($value >= PHP_INT_MAX) {
-      var_dump(gmp_strval(gmp_sub($value, '18446744073709551616')));exit;
       return gmp_strval(gmp_sub($value, '18446744073709551616'));
     }
     return $value;

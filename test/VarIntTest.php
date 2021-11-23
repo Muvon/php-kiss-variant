@@ -6,39 +6,39 @@ class VarIntTest extends TestCase {
   public function testReadUintFromHex() {
     $hex = '80897a';
     $this->assertEquals(
-      [2000000, 6],
-      VarInt::readUint($hex)
+      [2000000, 3],
+      VarInt::readUint(hex2bin($hex))
     );
 
     $hex = 'dde5b31880897a';
     $this->assertEquals(
-      [51180253, 8],
-      VarInt::readUint($hex)
+      [51180253, 4],
+      VarInt::readUint(hex2bin($hex))
     );
 
     $hex = 'd5c7c8a1a6ca9ee4bdab04';
     $this->assertEquals(
-      ['5123423423180343223253', 22],
-      VarInt::readUint($hex)
+      ['5123423423180343223253', 11],
+      VarInt::readUint(hex2bin($hex))
     );
   }
 
   public function testPackUintToHex() {
     $value = 2000000;
     $this->assertEquals(
-      '80897a',
+      hex2bin('80897a'),
       VarInt::packUint($value)
     );
 
     $value = 51180253;
     $this->assertEquals(
-      'dde5b318',
+      hex2bin('dde5b318'),
       VarInt::packUint($value)
     );
 
     $value = '5123423423180343223253';
     $this->assertEquals(
-      'd5c7c8a1a6ca9ee4bdab04',
+      hex2bin('d5c7c8a1a6ca9ee4bdab04'),
       VarInt::packUint($value)
     );
   }
@@ -46,45 +46,45 @@ class VarIntTest extends TestCase {
   public function testReadIntFromHex() {
     $hex = 'ff91f401';
     $this->assertEquals(
-      [-2000000, 8],
-      VarInt::readInt($hex)
+      [-2000000, 4],
+      VarInt::readInt(hex2bin($hex))
     );
 
     $hex = 'f601';
     $this->assertEquals(
-      [123, 4],
-      VarInt::readInt($hex)
+      [123, 2],
+      VarInt::readInt(hex2bin($hex))
     );
 
     $hex = '04';
     $this->assertEquals(
-      [2, 2],
-      VarInt::readInt($hex)
+      [2, 1],
+      VarInt::readInt(hex2bin($hex))
     );
   }
 
   public function testPackIntTohex() {
     $value = -2000000;
     $this->assertEquals(
-      'ff91f401',
+      hex2bin('ff91f401'),
       VarInt::packInt($value)
     );
 
     $value = 2;
     $this->assertEquals(
-      '04',
+      hex2bin('04'),
       VarInt::packInt($value)
     );
 
     $value = 123;
     $this->assertEquals(
-      'f601',
+      hex2bin('f601'),
       VarInt::packInt($value)
     );
 
     $value = 51180253;
     $this->assertEquals(
-      'bacbe730',
+      hex2bin('bacbe730'),
       VarInt::packInt($value)
     );
   }
