@@ -8,9 +8,10 @@ class VarInt {
     $x = 0;
     $s = 0;
     $i = $offset;
+    $gmp_mark = $i + 6;
     $max_i = $max_len + $offset;
     while (isset($bin[$i])) {
-      $use_gmp = $i > 6;
+      $use_gmp = $i > $gmp_mark;
       $b = ord($bin[$i]);
       if ($b < 0x80) {
         if ($max_len > 0 && ($i > $max_i || $i === $max_i && $b > 1)) {
